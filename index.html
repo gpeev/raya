@@ -222,10 +222,13 @@ function anim(){
 }
 anim();
 
-/* booking */
-bookBtn.onclick=()=>{
-  window.location.href="https://go.booker.com/location/SalonAtelierByLiz";
-};
+  if (bookBtn) {
+    bookBtn.onclick = () => {
+      window.location.href = "https://go.booker.com/location/SalonAtelierByLiz";
+    };
+  } else {
+    console.log("bookBtn not found");
+  }
 </script>
 
 </body>
