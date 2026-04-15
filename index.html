@@ -223,8 +223,11 @@ function anim(){
 anim();
 
   if (bookBtn) {
+    console.log("bookBtn found");
     bookBtn.onclick = () => {
-      window.location.href = "https://go.booker.com/location/SalonAtelierByLiz";
+      let url = "https://go.booker.com/location/SalonAtelierByLiz";
+      window.location.assign(url)
+      window.location.href = url;
     };
   } else {
     console.log("bookBtn not found");
