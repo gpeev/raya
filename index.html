@@ -1,5 +1,232 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salon Atelier by Liz</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;background:#000;font-family:Helvetica,Arial,sans-serif;overflow:hidden;color:#fff}
+
+/* BACKGROUND */
+.site{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  color:#d4b26a;
+}
+.site h1{opacity:.12;letter-spacing:.3em}
+
+/* CURTAINS */
+.stage{position:fixed;inset:0;z-index:3;}
+.curtain{
+  position:absolute;top:0;width:50%;height:100%;
+  background:#0a0a0a;
+  transition:transform 2s cubic-bezier(.76,0,.16,1);
+}
+.left{left:0}.right{right:0}
+.stage.open .left{transform:translateX(-100%)}
+.stage.open .right{transform:translateX(100%)}
+
+/* BIG NEWS */
+.announcement{
+  position:fixed;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  z-index:4;
+}
+.card{text-align:center;color:#d4b26a;transition:all 1s ease;}
+.card.fade-out{opacity:0;transform:translateY(20px);filter:blur(10px);}
+
+h2{
+  font-size:clamp(4rem,9vw,7rem);
+  letter-spacing:.42em;
+  font-weight:300;
+}
+
+/* WORD BY WORD */
+.subhead{
+  margin-top:22px;
+  display:flex;flex-wrap:wrap;justify-content:center;
+  gap:.5em;
+}
+.subhead span{
+  opacity:0;
+  transform:translateY(10px);
+  filter:blur(6px);
+  transition:.7s ease;
+}
+.subhead span.show{
+  opacity:.85;
+  transform:translateY(0);
+  filter:blur(0);
+}
+
+/* REVEAL CONTENT */
+.reveal{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  opacity:0;
+  transition:opacity 1.5s ease;
+}
+.reveal.show{opacity:1}
+
+/* LOGO */
+.logo img{
+  max-width:520px;width:90%;
+  filter:drop-shadow(0 8px 25px rgba(212,178,106,.18));
+  margin-bottom:25px;
+}
+
+/* INFO */
+.info{text-align:center;letter-spacing:.1em;line-height:1.8}
+
+/* BUTTON */
+.book-btn{
+  margin-top:24px;
+  padding:12px 26px;
+  border:1px solid rgba(212,178,106,.5);
+  background:transparent;
+  color:#d4b26a;
+  letter-spacing:.2em;
+  cursor:pointer;
+  position:relative;
+  opacity:0;
+  transform:translateY(10px);
+  transition:all 1.2s ease;
+}
+.book-btn.show{opacity:1;transform:translateY(0)}
+
+/* GLOW */
+.book-btn:hover{
+  background:#d4b26a;color:#000;
+  box-shadow:
+    0 0 12px rgba(212,178,106,.35),
+    0 0 40px rgba(212,178,106,.1);
+}
+
+/* REACTIVE LIGHT */
+.book-btn::after{
+  content:"";
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 120% 60% at var(--x,50%) var(--y,50%),
+      rgba(212,178,106,.45),
+      rgba(212,178,106,.15) 30%,
+      transparent 60%),
+    radial-gradient(ellipse 140% 70% at calc(var(--x,50%) + 8%) calc(var(--y,50%) - 6%),
+      rgba(200,220,255,.2),
+      transparent 60%);
+  transform:rotate(-18deg);
+  opacity:0;
+}
+.book-btn:hover::after{opacity:1}
+
+/* RAYA */
+.raya{
+  font-size:.75rem;
+  letter-spacing:.35em;
+  margin-top:18px;
+  opacity:0;
+  transform:translateY(8px);
+  transition:.9s ease;
+}
+.raya.show{opacity:.6;transform:translateY(0)}
+
+/* PULSE */
+.book-btn.pulse{
+  animation:pulse .8s ease;
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 rgba(212,178,106,0)}
+  50%{box-shadow:0 0 20px rgba(212,178,106,.3)}
+  100%{box-shadow:0 0 0 rgba(212,178,106,0)}
+}
+</style>
+</head>
+
 <body>
-test
+
+<div class="site"><h1>ATELIER</h1></div>
+
+<div class="stage" id="stage">
+  <div class="curtain left"></div>
+  <div class="curtain right"></div>
+</div>
+
+<div class="announcement" id="announcement">
+  <div class="card" id="card">
+    <h2>BIG NEWS</h2>
+
+    <div class="subhead" id="subhead">
+      <span>A</span><span>new</span><span>name.</span>
+      <span>A</span><span>new</span><span>space.</span>
+      <span>A</span><span>higher</span><span>standard.</span>
+    </div>
+  </div>
+</div>
+
+<div class="reveal" id="reveal">
+  <div class="logo">
+    <img src="IMG_3253.PNG">
+  </div>
+
+  <div class="info">
+    711 Lancaster Ave.<br>
+    Wayne, PA 19087<br><br>
+    (484) 212-1843
+  </div>
+
+  <button class="book-btn" id="bookBtn">BOOK NOW</button>
+
+  <div class="raya">RAYA • (484) 344-0750</div>
+</div>
+
+<script>
+const words=document.querySelectorAll('#subhead span');
+const card=document.getElementById('card');
+const stage=document.getElementById('stage');
+const reveal=document.getElementById('reveal');
+const bookBtn=document.getElementById('bookBtn');
+const raya=document.querySelector('.raya');
+
+words.forEach((w,i)=>{
+  setTimeout(()=>w.classList.add('show'),500+i*180);
+});
+
+let total=500+words.length*180;
+
+setTimeout(()=>card.classList.add('fade-out'),total+600);
+setTimeout(()=>stage.classList.add('open'),total+1400);
+setTimeout(()=>document.getElementById('announcement').style.display='none',total+2600);
+setTimeout(()=>{
+  reveal.classList.add('show');
+  bookBtn.classList.add('show');
+},total+3000);
+setTimeout(()=>raya.classList.add('show'),total+3300);
+setTimeout(()=>bookBtn.classList.add('pulse'),total+3600);
+
+/* reactive light */
+let tx=50,ty=50,cx=50,cy=50;
+bookBtn.addEventListener('mousemove',e=>{
+  let r=bookBtn.getBoundingClientRect();
+  tx=((e.clientX-r.left)/r.width)*100;
+  ty=((e.clientY-r.top)/r.height)*100;
+});
+function anim(){
+  cx+=(tx-cx)*.12;
+  cy+=(ty-cy)*.12;
+  bookBtn.style.setProperty('--x',cx+'%');
+  bookBtn.style.setProperty('--y',cy+'%');
+  requestAnimationFrame(anim);
+}
+anim();
+
+/* booking */
+bookBtn.onclick=()=>{
+  window.location.href="https://go.booker.com/location/SalonAtelierByLiz";
+};
+</script>
+
 </body>
 </html>
